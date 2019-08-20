@@ -1,0 +1,15 @@
+use LearnSQL
+go
+SELECT * FROM orderitems;
+BEGIN TRANSACTION;
+DELETE FROM orderitems;
+SELECT * FROM orderitems;
+ROLLBACK
+SELECT * FROM orderitems;
+
+BEGIN TRANSACTION;
+DELETE FROM orderitems WHERE order_num=20010;
+DELETE FROM orders WHERE order_num=20010;
+COMMIT;
+ SAVE TRANSACTION DELETE1
+

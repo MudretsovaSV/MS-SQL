@@ -1,0 +1,47 @@
+EXEC sp_fulltext_database 'enable';
+
+CREATE FULLTEXT CATALOG catalog_learnsql;
+
+CREATE FULLTEXT INDEX ON productnotes(note_text)
+KEY INDEX pk_productnotes
+ON catalog_learnsql;
+
+ALTER FULLTEXT CATALOG catalog_learnsql REBUILD --ПЕРЕСТРОЕНИЕ КАТАЛОГА ЗАНОВО
+REATE FULLTEXT
+
+SELECT * fROM sys.fulltext_catalogs
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE note_text LIKE '%rabbit food%'
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE FREETEXT (note_text, 'rabbit food');
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE CONTAINS (note_text, 'handsaw');
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE CONTAINS (note_text, '"safe*"'); --фраза с метасимволами заключается в двойные кавычки, потом в одиночные
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE CONTAINS (note_text, 'safe AND handsaw');
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE CONTAINS (note_text, 'detonate NEAR quickly');
+
+SELECT note_id, note_text
+FROM productnotes
+WHERE CONTAINS (note_text, 'FORMSOF(INFLECTIONAL, vary)'); --поис слов от общего корня (инфлекционное совпадение)
+
+SELECT f.rank, note_id, note_text
+FROM productnotes, 
+	FREETEXTTABLE(productnotes, note_text, 'rabbit food') f
+WHERE productnotes.note_id=f.[key]
+ORDER BY rank DESC
+
